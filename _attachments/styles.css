@@ -1,0 +1,11 @@
+﻿.clickable, .accordion-toggle {
+    cursor: pointer;
+}
+
+.root {
+    padding-top: 50px;
+}
+
+.teams {
+    padding-top: 50px;
+}
