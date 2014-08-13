@@ -18,8 +18,15 @@
 
     <script src="app.js"></script>
 
+    <script src="app/confirm/confirmCtrl.js"></script>
+    <script src="app/selectFromList/selectFromListCtrl.js"></script>
+
     <script src="app/table/tableCtrl.js"></script>
     <script src="app/typeahead/typeaheadCtrl.js"></script>
+    <script src="app/httpPersistence/CouchDbAction.js"></script>
+    <script src="app/httpPersistence/CouchDbResource.js"></script>
+    <script src="app/httpPersistence/teams.js"></script>
+    <script src="app/httpPersistence/members.js"></script>
 </head>
 <body ng-app="team">
     <div ng-controller="homeCtrl">
@@ -37,8 +44,22 @@
                         </div>
                         <div class="col-xs-4">
                             <div class="teams">
+                                <form class="add-team" ng-submit="addTeam()">
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" ng-model="newTeam.name" placeholder="Add new team" required />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit" ng-disabled="!isValid()"><i class="glyphicon glyphicon-plus"></i> Add</button>
+                                        </span>
+                                    </div>
+                                </form>
                                 <accordion>
-                                    <accordion-group ng-class="{active: isOpen}" ng-repeat="team in teams" heading="{{team.name}}">
+                                    <accordion-group ng-repeat="team in teams | reverse">
+                                        <accordion-heading>
+                                            <div class="relative">
+                                                <div ng-bind="team.name"></div>
+                                                <span class="close" ng-click="removeTeam(team, $event)"><i class="glyphicon glyphicon-remove"></i></span>
+                                            </div>
+                                        </accordion-heading>
                                         <div ng-repeat="member in team.members" ng-bind="member">
                                         </div>
                                     </accordion-group>

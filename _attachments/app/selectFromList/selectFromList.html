@@ -1,0 +1,6 @@
+﻿<div class="padding-10-15">
+    <form ng-submit="ok()">
+        <button type="button" ng-repeat="item in items" ng-bind="item.name" ng-class="{active: item.active}" ng-click="toggleActive(item)" class="btn btn-select btn-full-width"></button>
+        <button type="submit" class="btn btn-success btn-full-width">OK</button>
+    </form>
+</div>

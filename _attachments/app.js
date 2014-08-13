@@ -12,16 +12,58 @@ app.config(['$routeProvider', function ($routeProvider) {
     });
 }]);
 
-app.controller('homeCtrl', function ($scope, $location) {
-    $scope.teams = [
-        { name: 'team1', members: ['1', '2', '3', '4'] },
-        { name: 'team2', members: ['5', '6', '7', '8'] },
-        { name: 'team3', members: ['9', '10', '11', '12'] },
-        { name: 'team4', members: ['13', '14', '15', '16'] },
-        { name: 'team5', members: ['17', '18', '19', '20'] },
-        { name: 'team6', members: ['21', '22', '23', '24'] },
-    ];
+app.filter('reverse', function () {
+    return function (items) {
+        if (items) {
+            return items.slice().reverse();
+        }
+    }
+});
+
+app.controller('homeCtrl', function ($scope, $location, $modal, Teams) {
+    var emptyTeam = { name: '' };
+    $scope.newTeam = angular.copy(emptyTeam);
+    Teams.query().$promise.then(function (data) {
+        $scope.teams = data.rows;
+    });
     $scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
     };
+
+    $scope.addTeam = function () {
+        Teams.post($scope.newTeam).$promise.then(function () {
+            $scope.teams.push($scope.newTeam);
+            $scope.newTeam = angular.copy(emptyTeam);
+        });
+    }
+
+    $scope.isValid = function () {
+        return $scope.newTeam.name && $scope.newTeam.name.match(/^\w+$/);
+    }
+
+    $scope.removeTeam = function (team, $event) {
+        var dialog = $modal.open({
+            templateUrl: './app/confirm/confirm.html',
+            controller: 'confirmCtrl',
+            resolve: {
+                localization: function () {
+                    return {
+                        question: 'Are you sure you want to delete this team?',
+                        ok: 'Yes, I\'m sure',
+                        no: 'No, thanks'
+                    };
+                }
+            },
+            size: 'sm'
+        });
+
+        dialog.result.then(function () {
+            Teams.delete({ id: team._id, rev: team._rev }).$promise.then(function () {
+                var index = $scope.teams.indexOf(team);
+                $scope.teams.splice(index, 1);
+            });
+        });
+
+        $event.stopPropagation();
+    }
 });
