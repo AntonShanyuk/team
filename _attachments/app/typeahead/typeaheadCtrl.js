@@ -1,4 +1,5 @@
-﻿app.controller('typeaheadCtrl', function ($scope, $timeout, $modal, Members, Teams) {
+﻿app.controller('typeaheadCtrl', function ($scope, $timeout, $modal, $q, Members, Teams) {
+    $scope.selectedMembers = [];
     $scope.foundMembers = [];
     $scope.input = '';
 
@@ -7,7 +8,8 @@
             Members.query({ name: $scope.input }).$promise.then(function (data) {
                 $scope.foundMembers = data.rows;
                 var previous = null;
-                _.each($scope.foundMembers, function (member) {
+                _.chain($scope.foundMembers)
+                .each(function (member) {
                     member.previous = previous;
                     if (previous) {
                         previous.next = member;
@@ -44,12 +46,23 @@
 
     $scope.submit = function () {
         if ($scope.foundMembers.length) {
-            $scope.addToTeam($scope.active);
+            $scope.selectMember($scope.active);
         } else {
             Members.post({ name: $scope.input }).$promise.then(function () {
                 loadMembers();
             });
         }
+    }
+
+    $scope.selectMember = function (member) {
+        if (_.indexOf($scope.selectedMembers, member) < 0) {
+            $scope.selectedMembers.push(member);
+        }
+    }
+
+    $scope.unSelectMember = function (member) {
+        var index = _.indexOf($scope.selectedMembers, member);
+        $scope.selectedMembers.splice(index, 1);
     }
 
     $scope.change = function () {
@@ -65,30 +78,36 @@
         $scope.active = member;
     }
 
-    $scope.addToTeam = function (member) {
+    $scope.addToTeam = function () {
         Teams.query().$promise.then(function (data) {
             var dialog = $modal.open({
                 templateUrl: './app/selectFromList/selectFromList.html',
                 controller: 'selectFromListCtrl',
                 resolve: {
                     items: function () {
-                        if (member.teams && member.teams.length) {
-                            return _.each(data.rows, function (team) {
-                                team.active = _.contains(member.teams, team._id);
-                            });
-                        }
-                        else return data.rows;
+                        return data.rows;
                     }
                 }
             });
-            dialog.result.then(function (activeItems) {
-                var ids = _.pluck(activeItems, '_id');
-                member.teams = ids;
-                Members.put(member).$promise.then(function () {
-                    $scope.$emit('teamsChanged')
+            dialog.result.then(function (team) {
+                var promises = [];
+                for (var i = 0; i < $scope.selectedMembers.length; i++) {
+                    var member = $scope.selectedMembers[i];
+                    if (!member.teams) {
+                        member.teams = [];
+                    }
+                    if (!_.contains(member.teams, team._id)) {
+                        member.teams.push(team._id);
+                        var promise = Members.put(member).$promise;
+                        promises.push(promise);
+                    }
+                }
+                $q.all(promises).then(function () {
+                    $scope.$emit('teamChanged', { teamId: team._id });
+                    $scope.selectedMembers = [];
                 });
             });
         });
-        
+
     }
 });

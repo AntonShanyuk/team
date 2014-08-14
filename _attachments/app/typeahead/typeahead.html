@@ -1,17 +1,31 @@
 ﻿<div class="relative">
+    <div class="tag-manager">
+        <span ng-if="!selectedMembers.length" class="tag-manager-empty-message">
+            No items selected
+        </span>
+        <div ng-repeat="member in selectedMembers" class="pull-left tag">
+            <span ng-bind="member.name"></span>
+            <i class="clickable remove-tag glyphicon glyphicon-remove" ng-click="unSelectMember(member)"></i>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="add-to-team">
+        <button ng-disabled="!selectedMembers.length" ng-click="addToTeam()" class="btn btn-default pull-right"><i class="glyphicon glyphicon-share-alt"></i> Add to the team</button>
+        <div class="clearfix"></div>
+    </div>
     <form ng-submit="submit()" name="form">
         <div class="input-group">
             <input type="text" ng-model="input" ng-change="change()" class="form-control" placeholder="Type a name" ng-keyup="keyup($event)" ng-pattern="/^.+$/" required />
             <span class="input-group-btn">
                 <button class="btn" ng-class="{'btn-default': foundMembers.length, 'btn-success': !foundMembers.length}" ng-disabled="form.$invalid">
-                    <span ng-if="foundMembers.length"><i class="glyphicon glyphicon-share-alt"></i> Add to the team</span>
+                    <span ng-if="foundMembers.length"><i class="glyphicon glyphicon-share-alt"></i> Select user</span>
                     <span ng-if="!foundMembers.length"><i class="glyphicon glyphicon-plus"></i> Craete new user</span>
                 </button>
             </span>
         </div>
     </form>
     <div class="found-members" ng-if="foundMembers.length">
-        <div ng-repeat="member in foundMembers" class="clickable found-member" ng-bind="member.name" ng-class="{active: member == active}" ng-mousedown="setActive(member)" ng-click="addToTeam(member)">
+        <div ng-repeat="member in foundMembers" class="clickable found-member" ng-bind="member.name" ng-class="{active: member == active}" ng-mousedown="setActive(member)" ng-click="selectMember(member)">
         </div>
     </div>
 </div>

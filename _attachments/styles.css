@@ -68,3 +68,54 @@ input, input:focus {
 .padding-10-15 {
     padding: 10px 15px;
 }
+
+.tag-manager {
+    min-height: 100px;
+    background-color: aliceblue;
+    border-color: #dadada;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: table;
+    width: 100%;
+    padding: 2px 5px;
+    line-height: 2;
+}
+
+.tag-manager-empty-message {
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.tag {
+    background-color: #dadada;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    white-space: nowrap;
+}
+
+.remove-tag {
+    color: gray;
+    top: 3px;
+}
+
+    .remove-tag:hover {
+        color: black;
+    }
+.add-to-team {
+    padding-bottom: 10px;
+}
+
+.team-member {
+    cursor: default;
+}
+
+.team-member .close {
+    font-size: 14px;
+    top: 0;
+}
+
+.team-member:hover {
+    text-decoration: underline;
+}

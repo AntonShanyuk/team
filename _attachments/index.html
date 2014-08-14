@@ -53,14 +53,16 @@
                                     </div>
                                 </form>
                                 <accordion>
-                                    <accordion-group ng-repeat="team in teams | reverse">
+                                    <accordion-group ng-repeat="team in teams | reverse" is-open="team.active">
                                         <accordion-heading>
                                             <div class="relative">
                                                 <div ng-bind="team.name"></div>
                                                 <span class="close" ng-click="removeTeam(team, $event)"><i class="glyphicon glyphicon-remove"></i></span>
                                             </div>
                                         </accordion-heading>
-                                        <div ng-repeat="member in team.members" ng-bind="member.name">
+                                        <div ng-repeat="member in team.members" class="relative team-member">
+                                            <span ng-bind="member.name"></span>
+                                            <span class="close" ng-click="removeFromTeam(team, member)"><i class="glyphicon glyphicon-remove"></i></span>
                                         </div>
                                     </accordion-group>
                                 </accordion>

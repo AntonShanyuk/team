@@ -20,20 +20,23 @@ app.filter('reverse', function () {
     }
 });
 
-app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, Teams) {
+app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, $q, Teams, Members) {
     var emptyTeam = { name: '' };
     $scope.newTeam = angular.copy(emptyTeam);
 
-    function loadData() {
+    function loadData(teamId) {
         Teams.getAll().$promise.then(function (data) {
             $scope.teams = data.rows;
+            if (teamId) {
+                _.findWhere($scope.teams, { _id: teamId }).active = true;
+            }
         });
     }
 
     loadData();
 
-    $rootScope.$on('teamsChanged', function () {
-        loadData();
+    $rootScope.$on('teamChanged', function (event, args) {
+        loadData(args.teamId);
     });
 
     $scope.isActive = function (viewLocation) {
@@ -49,6 +52,15 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, Team
 
     $scope.isValid = function () {
         return $scope.newTeam.name && $scope.newTeam.name.match(/^\w+$/);
+    }
+
+    $scope.removeFromTeam = function (team, member) {
+        var index = _.indexOf(member.teams, team._id);
+        member.teams.splice(index, 1);
+        return Members.put(member).$promise.then(function () {
+            var index = _.indexOf(team.members, member);
+            team.members.splice(index, 1);
+        });
     }
 
     $scope.removeTeam = function (team, $event) {
@@ -68,9 +80,19 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, Team
         });
 
         dialog.result.then(function () {
-            Teams.delete({ id: team._id, rev: team._rev }).$promise.then(function () {
-                var index = _.indexOf($scope.teams, team);
-                $scope.teams.splice(index, 1);
+
+            var promises = [];
+            for (var i = 0; i < team.members.length; i++) {
+                var member = team.members[i];
+                var promise = $scope.removeFromTeam(team, member);
+                promises.push(promise);
+            }
+
+            $q.all(promises).then(function () {
+                Teams.delete({ id: team._id, rev: team._rev }).$promise.then(function () {
+                    var index = _.indexOf($scope.teams, team);
+                    $scope.teams.splice(index, 1);
+                });
             });
         });
 
