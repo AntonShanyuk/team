@@ -109,6 +109,7 @@ input, input:focus {
 
 .team-member {
     cursor: default;
+    margin: 5px 0;
 }
 
 .team-member .close {

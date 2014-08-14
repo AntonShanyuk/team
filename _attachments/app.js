@@ -20,15 +20,15 @@ app.filter('reverse', function () {
     }
 });
 
-app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, $q, Teams, Members) {
+app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, Teams, Members) {
     var emptyTeam = { name: '' };
     $scope.newTeam = angular.copy(emptyTeam);
 
-    function loadData(teamId) {
+    function loadData(args) {
         Teams.getAll().$promise.then(function (data) {
             $scope.teams = data.rows;
-            if (teamId) {
-                _.findWhere($scope.teams, { _id: teamId }).active = true;
+            if (args && args.teamId) {
+                _.findWhere($scope.teams, { _id: args.teamId }).active = true;
             }
         });
     }
@@ -36,7 +36,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, $q, 
     loadData();
 
     $rootScope.$on('teamChanged', function (event, args) {
-        loadData(args.teamId);
+        loadData(args);
     });
 
     $scope.isActive = function (viewLocation) {
@@ -64,24 +64,9 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, $q, 
     }
 
     $scope.removeTeam = function (team, $event) {
-        var dialog = $modal.open({
-            templateUrl: './app/confirm/confirm.html',
-            controller: 'confirmCtrl',
-            resolve: {
-                localization: function () {
-                    return {
-                        question: 'Are you sure you want to delete this team?',
-                        ok: 'Yes, I\'m sure',
-                        no: 'No, thanks'
-                    };
-                }
-            },
-            size: 'sm'
-        });
-
-        dialog.result.then(function () {
-
+        Modals.remove('Are you sure you want to delete this team?').then(function () {
             var promises = [];
+
             for (var i = 0; i < team.members.length; i++) {
                 var member = team.members[i];
                 var promise = $scope.removeFromTeam(team, member);

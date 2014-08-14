@@ -1,1 +1,10 @@
-﻿<div ng-bind="message"></div>
+﻿<div>
+    <div ng-repeat="member in members" class="team-member">
+        <div class="btn-toolbar pull-right">
+            <button type="button" class="btn btn-default" ng-click="addToTeam(member)"><i class="glyphicon glyphicon-share-alt"></i> Add to the team</button>
+            <button type="button" class="btn btn-danger" ng-click="removeMember(member)"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+        </div>
+        <div ng-bind="member.name"></div>
+        <div class="clearfix"></div>
+    </div>
+</div>

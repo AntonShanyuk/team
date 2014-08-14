@@ -1,4 +1,4 @@
-﻿app.controller('typeaheadCtrl', function ($scope, $timeout, $modal, $q, Members, Teams) {
+﻿app.controller('typeaheadCtrl', function ($scope, $timeout, Modals, Members, Teams) {
     $scope.selectedMembers = [];
     $scope.foundMembers = [];
     $scope.input = '';
@@ -79,35 +79,9 @@
     }
 
     $scope.addToTeam = function () {
-        Teams.query().$promise.then(function (data) {
-            var dialog = $modal.open({
-                templateUrl: './app/selectFromList/selectFromList.html',
-                controller: 'selectFromListCtrl',
-                resolve: {
-                    items: function () {
-                        return data.rows;
-                    }
-                }
-            });
-            dialog.result.then(function (team) {
-                var promises = [];
-                for (var i = 0; i < $scope.selectedMembers.length; i++) {
-                    var member = $scope.selectedMembers[i];
-                    if (!member.teams) {
-                        member.teams = [];
-                    }
-                    if (!_.contains(member.teams, team._id)) {
-                        member.teams.push(team._id);
-                        var promise = Members.put(member).$promise;
-                        promises.push(promise);
-                    }
-                }
-                $q.all(promises).then(function () {
-                    $scope.$emit('teamChanged', { teamId: team._id });
-                    $scope.selectedMembers = [];
-                });
-            });
+        Modals.addToTeam($scope.selectedMembers).then(function (team) {
+            $scope.$emit('teamChanged', { teamId: team._id });
+            $scope.selectedMembers = [];
         });
-
     }
 });
