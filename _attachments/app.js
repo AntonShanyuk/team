@@ -59,7 +59,7 @@ app.controller('homeCtrl', function ($scope, $location, $modal, Teams) {
 
         dialog.result.then(function () {
             Teams.delete({ id: team._id, rev: team._rev }).$promise.then(function () {
-                var index = $scope.teams.indexOf(team);
+                var index = _.indexOf($scope.teams, team);
                 $scope.teams.splice(index, 1);
             });
         });
