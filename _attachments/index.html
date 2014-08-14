@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <title></title>
@@ -60,7 +60,7 @@
                                                 <span class="close" ng-click="removeTeam(team, $event)"><i class="glyphicon glyphicon-remove"></i></span>
                                             </div>
                                         </accordion-heading>
-                                        <div ng-repeat="member in team.members" ng-bind="member">
+                                        <div ng-repeat="member in team.members" ng-bind="member.name">
                                         </div>
                                     </accordion-group>
                                 </accordion>

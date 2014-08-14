@@ -20,12 +20,22 @@ app.filter('reverse', function () {
     }
 });
 
-app.controller('homeCtrl', function ($scope, $location, $modal, Teams) {
+app.controller('homeCtrl', function ($scope, $rootScope, $location, $modal, Teams) {
     var emptyTeam = { name: '' };
     $scope.newTeam = angular.copy(emptyTeam);
-    Teams.query().$promise.then(function (data) {
-        $scope.teams = data.rows;
+
+    function loadData() {
+        Teams.getAll().$promise.then(function (data) {
+            $scope.teams = data.rows;
+        });
+    }
+
+    loadData();
+
+    $rootScope.$on('teamsChanged', function () {
+        loadData();
     });
+
     $scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
     };

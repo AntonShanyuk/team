@@ -82,7 +82,11 @@
                 }
             });
             dialog.result.then(function (activeItems) {
-                console.log(activeItems);
+                var ids = _.pluck(activeItems, '_id');
+                member.teams = ids;
+                Members.put(member).$promise.then(function () {
+                    $scope.$emit('teamsChanged')
+                });
             });
         });
         
