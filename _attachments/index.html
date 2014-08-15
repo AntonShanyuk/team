@@ -23,10 +23,13 @@
 
     <script src="app/table/tableCtrl.js"></script>
     <script src="app/typeahead/typeaheadCtrl.js"></script>
-    <script src="app/httpPersistence/CouchDbAction.js"></script>
-    <script src="app/httpPersistence/CouchDbResource.js"></script>
-    <script src="app/httpPersistence/teams.js"></script>
-    <script src="app/httpPersistence/members.js"></script>
+
+    <script src="app/httpPersistence/CouchDB/CouchDbAction.js"></script>
+    <script src="app/httpPersistence/CouchDB/CouchDbResource.js"></script>
+
+    <script src="app/httpPersistence/Comments.js"></script>
+    <script src="app/httpPersistence/Members.js"></script>
+    <script src="app/httpPersistence/Teams.js"></script>
 
     <script src="app/commonServices/modals.js"></script>
 </head>
@@ -62,7 +65,7 @@
                                                 <span class="close" ng-click="removeTeam(team, $event)"><i class="glyphicon glyphicon-remove"></i></span>
                                             </div>
                                         </accordion-heading>
-                                        <div ng-repeat="member in team.members" class="relative team-member">
+                                        <div ng-repeat="member in team.members" class="relative team-member blue-hover">
                                             <span ng-bind="member.name"></span>
                                             <span class="close" ng-click="removeFromTeam(team, member)"><i class="glyphicon glyphicon-remove"></i></span>
                                         </div>

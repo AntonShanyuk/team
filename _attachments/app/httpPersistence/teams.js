@@ -2,7 +2,7 @@
     var entity = {
         type: 'team',
         props: ['name']
-    }
+    };
     
     return new CouchDbResource(entity);
 });

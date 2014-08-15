@@ -1,10 +1,27 @@
 ﻿<div>
     <div ng-repeat="member in members" class="team-member">
-        <div class="btn-toolbar pull-right">
-            <button type="button" class="btn btn-default" ng-click="addToTeam(member)"><i class="glyphicon glyphicon-share-alt"></i> Add to the team</button>
-            <button type="button" class="btn btn-danger" ng-click="removeMember(member)"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+        <div class="blue-hover">
+            <div class="btn-toolbar pull-right">
+                <button type="button" class="btn btn-default" ng-click="addToTeam(member)"><i class="glyphicon glyphicon-share-alt"></i> Add to the team</button>
+                <button type="button" class="btn btn-danger" ng-click="removeMember(member)"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+            </div>
+            <div class="clickable" ng-click="toggleComments(member)">
+                <span ng-bind="member.name" class="member-name"></span>
+            </div>
         </div>
-        <div ng-bind="member.name"></div>
         <div class="clearfix"></div>
+        <div ng-show="member.commentsVisible" class="transitioned comments">
+            <div ng-repeat="comment in member.comments" class="comment">
+                <div ng-bind="comment.text" class="comment-text"></div>
+                <span class="comment-date" ng-cloak>{{comment.date | date:'medium'}}</span>
+                <i class="delete-comment glyphicon glyphicon-remove" ng-click="deleteComment(member, comment)"></i>
+                <hr />
+            </div>
+            <form ng-submit="addComment(member)">
+                <textarea rows="2" class="form-control" ng-model="member.comment" placeholder="Leave a comment here..."></textarea>
+                <button type="submit" class="btn btn-success pull-right add-comment"><i class="glyphicon glyphicon-comment"></i> Add comment</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
     </div>
 </div>

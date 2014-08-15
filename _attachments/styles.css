@@ -103,6 +103,7 @@ input, input:focus {
     .remove-tag:hover {
         color: black;
     }
+
 .add-to-team {
     padding-bottom: 10px;
 }
@@ -112,11 +113,79 @@ input, input:focus {
     margin: 5px 0;
 }
 
-.team-member .close {
-    font-size: 14px;
-    top: 0;
+    .team-member .close {
+        font-size: 14px;
+        top: 7px;
+        right: 5px;
+    }
+
+.blue-hover {
+    padding: 5px;
+    border-radius: 4px;
 }
 
-.team-member:hover {
-    text-decoration: underline;
+    .blue-hover:hover {
+        background-color: aliceblue;
+    }
+
+.transitioned {
+    -moz-transition-duration: .3s;
+    -o-transition-duration: .3s;
+    -webkit-transition-duration: .3s;
+    transition-duration: .3s;
+    -moz-transition-timing-function: linear;
+    -o-transition-timing-function: linear;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+}
+
+.comments {
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px dotted #dadada;
+}
+
+.add-comment {
+    margin-top: 5px;
+}
+
+.comment {
+    position: relative;
+}
+
+.comment-text {
+    padding: 5px 0 20px 0;
+}
+
+.comment-date {
+    font-size: 10px;
+    bottom: 10px;
+    right: 0;
+    position: absolute;
+    color: #dadada;
+}
+
+.delete-comment {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    color: #dadada;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+    .delete-comment:hover {
+        color: black;
+    }
+
+hr {
+    margin: 5px 0 0 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.member-name {
+    line-height: 3;
 }
