@@ -23,6 +23,17 @@
         }
     }
 
+    $scope.$on('memberChanged', function (event, args) {
+        var member = _.findWhere($scope.foundMembers, { _id: args.memberId });
+        if (member) {
+            Members.get({ id: member._id }).$promise.then(function (updatedMember) {
+                for (var i in updatedMember) {
+                    member[i] = updatedMember[i];
+                }
+            });
+        }
+    });
+
     $scope.keyup = function (event) {
         switch (event.keyCode) {
             case 40: // down

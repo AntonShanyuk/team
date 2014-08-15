@@ -41,6 +41,12 @@
                 return responseObject;
             }
         }
+
+        function formatGetResponse(response) {
+            var viewRelationsResponse = formatViewRelationsResponse(response);
+            return viewRelationsResponse.rows[0];
+        }
+
         var methods = {
             post: new CouchDbAction({ method: 'POST', params: {}, url: '../..', entity: entity }),
             put: new CouchDbAction({ method: 'PUT', entity: entity }),
@@ -49,7 +55,7 @@
                 method: 'GET',
                 url: encodeURI('_view/' + entity.type + 'Relations' + '?key=":id"'),
                 params: { v: function () { return new Date().getTime() } },
-                transfromResponse: formatViewRelationsResponse
+                transformResponse: formatGetResponse
             },
             getAll: {
                 method: 'GET',

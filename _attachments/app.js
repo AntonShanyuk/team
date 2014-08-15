@@ -25,7 +25,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
     $scope.newTeam = angular.copy(emptyTeam);
 
     function loadData(args) {
-        Teams.getAll().$promise.then(function (data) {
+        return Teams.getAll().$promise.then(function (data) {
             $scope.teams = data.rows;
             if (args && args.teamId) {
                 _.findWhere($scope.teams, { _id: args.teamId }).active = true;
@@ -58,8 +58,8 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
         var index = _.indexOf(member.teams, team._id);
         member.teams.splice(index, 1);
         return Members.put(member).$promise.then(function () {
-            var index = _.indexOf(team.members, member);
-            team.members.splice(index, 1);
+            loadData({ teamId: team._id });
+            $rootScope.$broadcast('memberChanged', { memberId: member._id });
         });
     }
 

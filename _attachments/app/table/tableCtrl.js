@@ -6,6 +6,16 @@
     }
 
     $scope.$on('$viewContentLoaded', loadData);
+    $scope.$on('memberChanged', function (event, args) {
+        var member = _.findWhere($scope.members, { _id: args.memberId });
+        if (member) {
+            Members.get({ id: member._id }).$promise.then(function (updatedMember) {
+                for (var i in updatedMember) {
+                    member[i] = updatedMember[i];
+                }
+            });
+        }
+    });
     $scope.removeMember = function (member) {
         Modals.remove('Are you sure you want to delete this member?').then(function () {
             Members.delete({ id: member._id, rev: member._rev }).$promise.then(function () {
