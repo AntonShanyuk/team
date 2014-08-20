@@ -53,22 +53,48 @@
             'delete': { method: 'DELETE' },
             get: {
                 method: 'GET',
-                url: encodeURI('_view/' + entity.type + 'Relations' + '?key=":id"'),
+                url: encodeURI(entity.url + '?key=":id"'),
                 params: { v: function () { return new Date().getTime() } },
                 transformResponse: formatGetResponse
             },
             getAll: {
                 method: 'GET',
-                url: encodeURI('_view/' + entity.type + 'Relations'),
+                url: encodeURI(entity.url),
                 params: { v: function () { return new Date().getTime() } },
                 transformResponse: formatViewRelationsResponse
-            },
-            query: {
-                method: 'GET', params: { v: function () { return new Date().getTime() } }, isArray: false, url: encodeURI('_view/' + entity.type + '?startkey=":name"&endkey=":name\ufff0"'), transformResponse: function (response) {
+            }
+        }
+
+        entity.indexes = entity.indexes || [];
+        for (var i = 0; i < entity.indexes.length; i++) {
+            var index = entity.indexes[i];
+            var methodName = 'query$' + index.keys.sort().toString();
+            methods[methodName] = {
+                method: 'GET', params: { v: function () { return new Date().getTime() } }, isArray: false, url: encodeURI(index.url), transformResponse: function (response) {
                     return formatViewResponse(response);
                 }
             }
         }
-        return $resource(encodeURI('../../:id?rev=:rev'), null, methods);
+
+        var resource = $resource(encodeURI('../../:id?rev=:rev'), null, methods);
+        var get = resource.get;
+        resource.get = function (id) {
+            if (id) {
+                return get.call(resource, { id: id });
+            } else {
+                return resource.getAll();
+            }
+        };
+
+        resource.query = function (params) {
+            var indexKey = _.keys(params).sort();
+            var methodName = 'query$' + indexKey.toString();
+            if (!resource[methodName]) {
+                throw new Error("Failed to find the view for specified parameters: " + indexKey);
+            }
+
+            return resource[methodName](params);
+        };
+        return resource;
     }
 });

@@ -21,7 +21,7 @@
         addToTeam: function (members) {
             var deferred = $q.defer();
 
-            Teams.query().$promise.then(function (data) {
+            Teams.get().$promise.then(function (data) {
                 var dialog = $modal.open({
                     templateUrl: './app/selectFromList/selectFromList.html',
                     controller: 'selectFromListCtrl',

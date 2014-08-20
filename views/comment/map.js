@@ -1,5 +1,5 @@
 ﻿function(doc){
     if(doc.type == 'comment'){
-        emit(doc.name, doc);
+        emit(doc.id, doc);
     }
 }

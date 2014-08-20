@@ -25,7 +25,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
     $scope.newTeam = angular.copy(emptyTeam);
 
     function loadData(args) {
-        return Teams.getAll().$promise.then(function (data) {
+        return Teams.get().$promise.then(function (data) {
             $scope.teams = data.rows;
             if (args && args.teamId) {
                 _.findWhere($scope.teams, { _id: args.teamId }).active = true;
