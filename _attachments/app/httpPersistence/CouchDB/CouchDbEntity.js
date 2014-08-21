@@ -1,4 +1,4 @@
-﻿app.factory('CouchDbResource', function ($resource, CouchDbAction) {
+﻿app.factory('CouchDbEntity', function ($resource, CouchDbAction) {
 
     function stringFormat(input) {
         var args = Array.prototype.slice.call(arguments, 1);
