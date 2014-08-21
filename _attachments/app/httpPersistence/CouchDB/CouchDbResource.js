@@ -1,5 +1,15 @@
 ﻿app.factory('CouchDbResource', function ($resource, CouchDbAction) {
 
+    function stringFormat(input) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return input.replace(/{(\d+)}/g, function(match, number) { 
+            return typeof args[number] != 'undefined'
+              ? args[number]
+              : match
+            ;
+        });
+    };
+
     function formatViewResponse(response) {
         var responseObject = JSON.parse(response);
         var values = _.chain(responseObject.rows).map(function (row) {
@@ -10,7 +20,11 @@
         return { rows: values };
     }
 
-    return function (entity) {
+    var ctor = function (entity) {
+
+        entity.config = entity.config || {};
+        angular.extend(entity.config, ctor.config);
+
         function formatViewRelationsResponse(response) {
             var responseObject = JSON.parse(response);
             var relations = _.chain(responseObject.rows).
@@ -28,7 +42,8 @@
                     .each(function (row) {
                         for (var i in relations) {
                             var relation = relations[i];
-                            row.value[relation + 's'] = _.chain(responseObject.rows)
+                            var relationProp = ctor.relationMappings[relation] || relation + 's';
+                            row.value[relationProp] = _.chain(responseObject.rows)
                                 .filter(function (relationRow) {
                                     return relationRow.value.type == relation && relationRow.key == row.key;
                                 }).pluck('value').value();
@@ -48,12 +63,12 @@
         }
 
         var methods = {
-            post: new CouchDbAction({ method: 'POST', params: {}, url: '../..', entity: entity }),
+            post: new CouchDbAction({ method: 'POST', params: {}, url: entity.config.dbUrl, entity: entity }),
             put: new CouchDbAction({ method: 'PUT', entity: entity }),
             'delete': { method: 'DELETE' },
             get: {
                 method: 'GET',
-                url: encodeURI(entity.url + '?key=":id"'),
+                url: encodeURI(stringFormat('{0}?key=":id"', entity.url)),
                 params: { v: function () { return new Date().getTime() } },
                 transformResponse: formatGetResponse
             },
@@ -76,7 +91,7 @@
             }
         }
 
-        var resource = $resource(encodeURI('../../:id?rev=:rev'), null, methods);
+        var resource = $resource(encodeURI(stringFormat('{0}/:id?rev=:rev', entity.config.dbUrl)), null, methods);
         var get = resource.get;
         resource.get = function (id) {
             if (id) {
@@ -96,5 +111,13 @@
             return resource[methodName](params);
         };
         return resource;
-    }
+    };
+
+    ctor.config = {
+        dbUrl: '../..'
+    };
+
+    ctor.relationMappings = {};
+
+    return ctor;
 });
