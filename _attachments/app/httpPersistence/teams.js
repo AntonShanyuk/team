@@ -1,9 +1,9 @@
-﻿app.factory('Teams', function (CouchDbEntity) {
+﻿app.factory('Teams', function () {
     var entity = {
         type: 'team',
         props: ['name'],
         url: '_view/team'
     };
     
-    return new CouchDbEntity(entity);
+    return new CouchEntity(entity);
 });

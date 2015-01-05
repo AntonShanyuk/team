@@ -1,4 +1,4 @@
-﻿app.factory('Members', function (CouchDbEntity) {
+﻿app.factory('Members', function () {
     function stringFormat(input) {
         var args = Array.prototype.slice.call(arguments, 1);
         return input.replace(/{(\d+)}/g, function (match, number) {
@@ -9,7 +9,7 @@
         });
     };
 
-    return new CouchDbEntity({
+    return new CouchEntity({
         type: 'member',
         props: ['name', 'teams'],
         url: '_view/member',

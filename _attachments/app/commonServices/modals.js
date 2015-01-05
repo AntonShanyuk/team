@@ -1,4 +1,4 @@
-﻿app.factory('Modals', function ($modal, $q, Teams, Members) {
+﻿app.factory('Modals', function ($modal, $q, $timeout, Teams, Members) {
 
     return {
         remove: function (heading) {
@@ -21,32 +21,34 @@
         addToTeam: function (members) {
             var deferred = $q.defer();
 
-            Teams.get().$promise.then(function (data) {
-                var dialog = $modal.open({
-                    templateUrl: './app/selectFromList/selectFromList.html',
-                    controller: 'selectFromListCtrl',
-                    resolve: {
-                        items: function () {
-                            return data.rows;
+            Teams.get().then(function (data) {
+                $timeout(function() {
+                    var dialog = $modal.open({
+                        templateUrl: './app/selectFromList/selectFromList.html',
+                        controller: 'selectFromListCtrl',
+                        resolve: {
+                            items: function () {
+                                return data;
+                            }
                         }
-                    }
-                }, deferred.reject);
-                dialog.result.then(function (team) {
-                    var promises = [];
-                    for (var i = 0; i < members.length; i++) {
-                        var member = members[i];
-                        if (!member.teams) {
-                            member.teams = [];
-                        }
-                        if (!_.contains(member.teams, team._id)) {
-                            member.teams.push(team._id);
-                            var promise = Members.put(member).$promise;
-                            promises.push(promise);
-                        }
-                    }
-                    $q.all(promises).then(function () {
-                        deferred.resolve(team);
                     }, deferred.reject);
+                    dialog.result.then(function (team) {
+                        var promises = [];
+                        for (var i = 0; i < members.length; i++) {
+                            var member = members[i];
+                            if (!member.teams) {
+                                member.teams = [];
+                            }
+                            if (!_.contains(member.teams, team._id)) {
+                                member.teams.push(team._id);
+                                var promise = Members.put(member);
+                                promises.push(promise);
+                            }
+                        }
+                        $q.all(promises).then(function () {
+                            deferred.resolve(team);
+                        }, deferred.reject);
+                    });
                 });
             });
 

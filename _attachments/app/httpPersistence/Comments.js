@@ -1,5 +1,5 @@
-﻿app.factory('Comments', function (CouchDbEntity) {
-    return new CouchDbEntity({
+﻿app.factory('Comments', function () {
+    return new CouchEntity({
         type: 'comment',
         props: ['text', 'member', 'date'],
         url: '_view/comment'

@@ -1,45 +1,45 @@
 ﻿(function (config, _) {
-    var ajax = config.ajax;
+    var db = config.db;
 
-    config.Entity = function (entityConfig) {
+    window.CouchEntity = function (entityConfig) {
         entityConfig.dbUrl = entityConfig.dbUrl || '../..';
         entityConfig.relationMappings = entityConfig.relationMappings || {};
         entityConfig.indexes = entityConfig.indexes || {};
 
         this.get = function(id) {
             if (id) {
-                return ajax.get(urlFormat('{0}/{1}', entityConfig.dbUrl, id));
+                return db.get(urlFormat('{0}/{1}', entityConfig.dbUrl, id));
             } else {
-                return ajax.get(urlFormat('{0}/{1}', entityConfig.dbUrl, entityConfig.url)).then(formatViewRelationsResponse);
+                return db.get(encodeURI(entityConfig.url)).then(formatViewRelationsResponse);
             }
         }
 
         this.put = function (doc) {
             var model = createModel(doc);
             var url = urlFormat('{0}/{1}?rev={2}', entityConfig.dbUrl, doc._id, doc._rev);
-            return ajax.put(url, model).then(function(responseObject) {
+            return db.put(url, model).then(function(responseObject) {
                 doc._rev = responseObject.rev;
             });
         }
 
         this.post = function (doc) {
             var model = createModel(doc);
-            return ajax.post(entityConfig.dbUrl, model).then(function(responseObject) {
+            return db.post(entityConfig.dbUrl, model).then(function(responseObject) {
                 doc._id = responseObject.id;
                 doc._rev = responseObject.rev;
             });
         }
 
-        this['delete'] = function(id) {
-            var url = urlFormat('{0}/{1}', entityConfig.dbUrl, id);
-            return ajax.delete(url);
+        this['delete'] = function(id, rev) {
+            var url = urlFormat('{0}/{1}?rev={2}', entityConfig.dbUrl, id, rev);
+            return db.delete(url);
         }
 
         for (var indexName in entityConfig.indexes) {
             var indexFunc = entityConfig.indexes[indexName];
             this[indexName] = function () {
                 var url = indexFunc.apply(null, arguments);
-                return ajax.get(urlFormat('{0}/{1}', dbUrl, url)).then(formatViewRelationsResponse);
+                return db.get(encodeURI(url)).then(formatViewRelationsResponse);
             }
         }
 
@@ -49,6 +49,8 @@
                 var prop = entityConfig.props[i];
                 model[prop] = doc[prop];
             }
+
+            model.type = entityConfig.type;
 
             return model;
         }
@@ -95,4 +97,4 @@
         });
         return encodeURI(output);
     };
-})(couchOrm || {}, _);
+})({ db: window.angularAjax } || {}, _);

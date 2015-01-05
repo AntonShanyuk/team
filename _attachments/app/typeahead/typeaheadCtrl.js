@@ -5,18 +5,20 @@
 
     function loadMembers() {
         if ($scope.input) {
-            Members.query({ name: $scope.input }).$promise.then(function (data) {
-                $scope.foundMembers = data.rows;
-                var previous = null;
-                _.chain($scope.foundMembers)
-                .each(function (member) {
-                    member.previous = previous;
-                    if (previous) {
-                        previous.next = member;
-                    }
-                    previous = member;
+            Members.byName($scope.input).then(function (data) {
+                $timeout(function() {
+                    $scope.foundMembers = data;
+                    var previous = null;
+                    _.chain($scope.foundMembers)
+                    .each(function (member) {
+                        member.previous = previous;
+                        if (previous) {
+                            previous.next = member;
+                        }
+                        previous = member;
+                    });
+                    $scope.active = $scope.foundMembers[0];
                 });
-                $scope.active = $scope.foundMembers[0];
             });
         } else {
             $scope.foundMembers = [];
@@ -26,7 +28,7 @@
     $scope.$on('memberChanged', function (event, args) {
         var member = _.findWhere($scope.foundMembers, { _id: args.memberId });
         if (member) {
-            Members.get(member._id).$promise.then(function (updatedMember) {
+            Members.get(member._id).then(function (updatedMember) {
                 for (var i in updatedMember) {
                     member[i] = updatedMember[i];
                 }
@@ -59,7 +61,7 @@
         if ($scope.foundMembers.length) {
             $scope.selectMember($scope.active);
         } else {
-            Members.post({ name: $scope.input }).$promise.then(function () {
+            Members.post({ name: $scope.input }).then(function () {
                 loadMembers();
             });
         }

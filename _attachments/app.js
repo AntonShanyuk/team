@@ -1,4 +1,4 @@
-﻿window.app = angular.module('team', ['ngRoute', 'ngResource', 'ui.bootstrap']);
+﻿window.app = angular.module('team', ['ngRoute', 'ngResource', 'ui.bootstrap', 'angularCouch']);
 
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/table', {
@@ -20,16 +20,18 @@ app.filter('reverse', function () {
     }
 });
 
-app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, Teams, Members) {
+app.controller('homeCtrl', function ($scope, $rootScope, $location, $timeout, Modals, $q, Teams, Members) {
     var emptyTeam = { name: '' };
     $scope.newTeam = angular.copy(emptyTeam);
 
     function loadData(args) {
-        return Teams.get().$promise.then(function (data) {
-            $scope.teams = data.rows;
-            if (args && args.teamId) {
-                _.findWhere($scope.teams, { _id: args.teamId }).active = true;
-            }
+        return Teams.get().then(function (data) {
+            $timeout(function() {
+                $scope.teams = data;
+                if (args && args.teamId) {
+                    _.findWhere($scope.teams, { _id: args.teamId }).active = true;
+                }
+            });
         });
     }
 
@@ -44,7 +46,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
     };
 
     $scope.addTeam = function () {
-        Teams.post($scope.newTeam).$promise.then(function () {
+        Teams.post($scope.newTeam).then(function () {
             $scope.teams.push($scope.newTeam);
             $scope.newTeam = angular.copy(emptyTeam);
         });
@@ -57,7 +59,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
     $scope.removeFromTeam = function (team, member) {
         var index = _.indexOf(member.teams, team._id);
         member.teams.splice(index, 1);
-        return Members.put(member).$promise.then(function () {
+        return Members.put(member).then(function () {
             loadData({ teamId: team._id });
             $rootScope.$broadcast('memberChanged', { memberId: member._id });
         });
@@ -74,7 +76,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, 
             }
 
             $q.all(promises).then(function () {
-                Teams.delete({ id: team._id, rev: team._rev }).$promise.then(function () {
+                Teams.delete(team._id, team._rev).then(function () {
                     var index = _.indexOf($scope.teams, team);
                     $scope.teams.splice(index, 1);
                 });
