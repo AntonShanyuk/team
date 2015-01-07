@@ -1,4 +1,6 @@
-﻿(function($) {
+﻿(function ($) {
+    "use strict";
+
     window.jqueryAjax = {
         get: get,
         put: put,

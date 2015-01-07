@@ -20,18 +20,16 @@ app.filter('reverse', function () {
     }
 });
 
-app.controller('homeCtrl', function ($scope, $rootScope, $location, $timeout, Modals, $q, Teams, Members) {
+app.controller('homeCtrl', function ($scope, $rootScope, $location, Modals, $q, Teams, Members) {
     var emptyTeam = { name: '' };
     $scope.newTeam = angular.copy(emptyTeam);
 
     function loadData(args) {
         return Teams.get().then(function (data) {
-            $timeout(function() {
-                $scope.teams = data;
-                if (args && args.teamId) {
-                    _.findWhere($scope.teams, { _id: args.teamId }).active = true;
-                }
-            });
+            $scope.teams = data;
+            if (args && args.teamId) {
+                _.findWhere($scope.teams, { _id: args.teamId }).active = true;
+            }
         });
     }
 

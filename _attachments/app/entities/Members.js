@@ -1,4 +1,4 @@
-﻿app.factory('Members', function () {
+﻿app.factory('Members', function (CouchEntity) {
     function stringFormat(input) {
         var args = Array.prototype.slice.call(arguments, 1);
         return input.replace(/{(\d+)}/g, function (match, number) {

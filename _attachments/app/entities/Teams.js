@@ -1,4 +1,4 @@
-﻿app.factory('Teams', function () {
+﻿app.factory('Teams', function (CouchEntity) {
     var entity = {
         type: 'team',
         props: ['name'],

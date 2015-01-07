@@ -1,9 +1,7 @@
-﻿app.controller('tableCtrl', function ($scope, $timeout, Modals, Members, Teams, Comments) {
+﻿app.controller('tableCtrl', function ($scope, Modals, Members, Teams, Comments) {
     function loadData() {
         Members.get().then(function (data) {
-            $timeout(function () {
-                $scope.members = data;
-            });
+            $scope.members = data;
         });
     }
 
@@ -12,11 +10,9 @@
         var member = _.findWhere($scope.members, { _id: args.memberId });
         if (member) {
             Members.get(member._id).then(function (updatedMember) {
-                $timeout(function() {
-                    for (var i in updatedMember) {
-                        member[i] = updatedMember[i];
-                    }
-                });
+                for (var i in updatedMember) {
+                    member[i] = updatedMember[i];
+                }
             });
         }
     });
@@ -43,22 +39,18 @@
     $scope.addComment = function (member) {
         var comment = { text: member.comment, member: member._id, date: new Date() };
         Comments.post(comment).then(function () {
-            $timeout(function() {
-                if (!member.comments) {
-                    member.comments = [];
-                }
-                member.comments.push(comment);
-                member.comment = '';
-            });
+            if (!member.comments) {
+                member.comments = [];
+            }
+            member.comments.push(comment);
+            member.comment = '';
         });
     };
 
     $scope.deleteComment = function (member, comment) {
         Comments.delete(comment._id, comment._rev).then(function () {
-            $timeout(function() {
-                var index = _.indexOf(member.comments, comment);
-                member.comments.splice(index, 1);
-            });
+            var index = _.indexOf(member.comments, comment);
+            member.comments.splice(index, 1);
         });
     };
 });

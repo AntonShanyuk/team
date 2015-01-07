@@ -1,7 +1,10 @@
 ﻿(function (config, _) {
-    window.CouchEntity = CouchEntityFactory(config);
+    "use strict";
 
-    window.CouchEntityFactory = function(factoryConfig) {
+    window.CouchEntity = CouchEntityFactory(config);
+    window.CouchEntityFactory = CouchEntityFactory;
+
+    function CouchEntityFactory(factoryConfig) {
         var db = factoryConfig.db;
 
         return function (entityConfig) {

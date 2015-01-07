@@ -6,19 +6,17 @@
     function loadMembers() {
         if ($scope.input) {
             Members.byName($scope.input).then(function (data) {
-                $timeout(function() {
-                    $scope.foundMembers = data;
-                    var previous = null;
-                    _.chain($scope.foundMembers)
-                    .each(function (member) {
-                        member.previous = previous;
-                        if (previous) {
-                            previous.next = member;
-                        }
-                        previous = member;
-                    });
-                    $scope.active = $scope.foundMembers[0];
+                $scope.foundMembers = data;
+                var previous = null;
+                _.chain($scope.foundMembers)
+                .each(function (member) {
+                    member.previous = previous;
+                    if (previous) {
+                        previous.next = member;
+                    }
+                    previous = member;
                 });
+                $scope.active = $scope.foundMembers[0];
             });
         } else {
             $scope.foundMembers = [];
