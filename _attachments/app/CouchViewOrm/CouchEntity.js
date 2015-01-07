@@ -1,7 +1,6 @@
-﻿(function (config, _) {
+﻿(function (_) {
     "use strict";
 
-    window.CouchEntity = CouchEntityFactory(config);
     window.CouchEntityFactory = CouchEntityFactory;
 
     function CouchEntityFactory(factoryConfig) {
@@ -104,4 +103,4 @@
             return encodeURI(output);
         };
     }
-})({ db: window.angularAjax } || {}, _);
+})(_);
