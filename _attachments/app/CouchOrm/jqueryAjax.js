@@ -1,7 +1,7 @@
-﻿(function ($) {
-    "use strict";
+﻿define(['jquery'], function($) {
+    'use strict';
 
-    window.jqueryAjax = {
+    return {
         get: get,
         put: put,
         post: post,
@@ -23,4 +23,4 @@
     function remove(url) {
         return $.ajax(url, { dataType: 'json', type: 'DELETE' });
     }
-})($);
+});

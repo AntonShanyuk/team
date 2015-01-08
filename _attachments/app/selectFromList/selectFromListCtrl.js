@@ -1,11 +1,15 @@
-﻿app.controller('selectFromListCtrl', function ($scope, $modalInstance, items) {
-    $scope.items = items;
+﻿define(['angular'], function (angular) {
+    'use strict';
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss();
-    };
+    angular.module('app').controller('selectFromListCtrl', function ($scope, $modalInstance, items) {
+        $scope.items = items;
 
-    $scope.select = function (item) {
-        $modalInstance.close(item);
-    }
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+        };
+
+        $scope.select = function (item) {
+            $modalInstance.close(item);
+        }
+    });
 });

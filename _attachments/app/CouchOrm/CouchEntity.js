@@ -1,8 +1,8 @@
-﻿(function (angular) {
+﻿define(['angular', 'CouchEntityFactory'], function (angular, CouchEntityFactory) {
     'use strict';
 
     var angularCouch = angular.module('angularCouch', []);
-    angularCouch.factory('CouchEntity', CouchEntity)
+    angularCouch.factory('CouchEntity', CouchEntity);
 
     CouchEntity.$inject = ['$http'];
 
@@ -14,7 +14,7 @@
             'delete': remove
         }
 
-        return window.CouchEntityFactory({ db: angularAjax });
+        return CouchEntityFactory({ db: angularAjax });
 
         function get(url) {
             return $http.get(url, { cache: false }).then(getResponseData);
@@ -36,4 +36,4 @@
             return response.data;
         }
     }
-})(angular);
+})

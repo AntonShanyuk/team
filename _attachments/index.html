@@ -6,35 +6,11 @@
 
     <link href="libs/css/bootstrap-theme.min.css" rel="stylesheet" />
     <link href="libs/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="styles.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet"/>
 
-    <script src="libs/js/jquery-1.11.1.min.js"></script>
-    <script src="libs/js/underscore-min.js"></script>
-    <script src="libs/js/bootstrap.min.js"></script>
-    <script src="libs/js/angular.min.js"></script>
-    <script src="libs/js/angular-resource.min.js"></script>
-    <script src="libs/js/angular-route.min.js"></script>
-    <script src="libs/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-
-    <script src="app.js"></script>
-
-    <script src="app/confirm/confirmCtrl.js"></script>
-    <script src="app/selectFromList/selectFromListCtrl.js"></script>
-
-    <script src="app/table/tableCtrl.js"></script>
-    <script src="app/typeahead/typeaheadCtrl.js"></script>
-
-    <script src="app/CouchViewOrm/jqueryAjax.js"></script>
-    <script src="app/CouchViewOrm/CouchEntity.js"></script>
-    <script src="app/CouchViewOrm/CouchEntityAngularShim.js"></script>
-
-    <script src="app/entities/Comments.js"></script>
-    <script src="app/entities/Members.js"></script>
-    <script src="app/entities/Teams.js"></script>
-
-    <script src="app/commonServices/modals.js"></script>
+    <script src="require.js" data-main="main.js"></script>
 </head>
-<body ng-app="team">
+<body>
     <div ng-controller="homeCtrl">
         <div class="root container-fluid">
             <div class="row">

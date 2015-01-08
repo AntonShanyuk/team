@@ -1,11 +1,15 @@
-﻿app.controller('confirmCtrl', function ($scope, $modalInstance, localization) {
-    $scope.localization = localization;
+﻿define(['angular'], function(angular) {
+    'use strict';
 
-    $scope.ok = function () {
-        $modalInstance.close();
-    };
+    angular.module('app').controller('confirmCtrl', function ($scope, $modalInstance, localization) {
+        $scope.localization = localization;
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss();
-    };
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+        };
+    });
 });

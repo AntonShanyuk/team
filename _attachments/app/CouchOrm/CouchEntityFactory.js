@@ -1,17 +1,15 @@
-﻿(function (_) {
-    "use strict";
+﻿define(['underscore'], function(_) {
+    'use strict';
 
-    window.CouchEntityFactory = CouchEntityFactory;
-
-    function CouchEntityFactory(factoryConfig) {
+    return function(factoryConfig) {
         var db = factoryConfig.db;
 
-        return function (entityConfig) {
+        return function(entityConfig) {
             entityConfig.dbUrl = entityConfig.dbUrl || '../..';
             entityConfig.relationMappings = entityConfig.relationMappings || {};
             entityConfig.indexes = entityConfig.indexes || {};
 
-            this.get = function (id) {
+            this.get = function(id) {
                 if (id) {
                     return db.get(urlFormat('{0}/{1}', entityConfig.dbUrl, id));
                 } else {
@@ -19,30 +17,30 @@
                 }
             }
 
-            this.put = function (doc) {
+            this.put = function(doc) {
                 var model = createModel(doc);
                 var url = urlFormat('{0}/{1}?rev={2}', entityConfig.dbUrl, doc._id, doc._rev);
-                return db.put(url, model).then(function (responseObject) {
+                return db.put(url, model).then(function(responseObject) {
                     doc._rev = responseObject.rev;
                 });
             }
 
-            this.post = function (doc) {
+            this.post = function(doc) {
                 var model = createModel(doc);
-                return db.post(entityConfig.dbUrl, model).then(function (responseObject) {
+                return db.post(entityConfig.dbUrl, model).then(function(responseObject) {
                     doc._id = responseObject.id;
                     doc._rev = responseObject.rev;
                 });
             }
 
-            this['delete'] = function (id, rev) {
+            this['delete'] = function(id, rev) {
                 var url = urlFormat('{0}/{1}?rev={2}', entityConfig.dbUrl, id, rev);
                 return db.delete(url);
             }
 
             for (var indexName in entityConfig.indexes) {
                 var indexFunc = entityConfig.indexes[indexName];
-                this[indexName] = function () {
+                this[indexName] = function() {
                     var url = indexFunc.apply(null, arguments);
                     return db.get(encodeURI(url)).then(formatViewRelationsResponse);
                 }
@@ -65,20 +63,20 @@
                     pluck('value').
                     pluck('type').
                     uniq().
-                    reject(function (value) {
+                    reject(function(value) {
                         return value == entityConfig.type;
                     }).value();
                 if (relations) {
                     var rows = _.chain(responseObject.rows)
-                        .filter(function (row) {
+                        .filter(function(row) {
                             return row.value.type == entityConfig.type;
                         })
-                        .each(function (row) {
+                        .each(function(row) {
                             for (var i in relations) {
                                 var relation = relations[i];
                                 var relationProp = entityConfig.relationMappings[relation] || relation + 's';
                                 row.value[relationProp] = _.chain(responseObject.rows)
-                                    .filter(function (relationRow) {
+                                    .filter(function(relationRow) {
                                         return relationRow.value.type == relation && relationRow.key == row.key;
                                     }).pluck('value').value();
                             }
@@ -94,13 +92,12 @@
 
         function urlFormat(input) {
             var args = Array.prototype.slice.call(arguments, 1);
-            var output = input.replace(/{(\d+)}/g, function (match, number) {
+            var output = input.replace(/{(\d+)}/g, function(match, number) {
                 return typeof args[number] != 'undefined'
-                  ? args[number]
-                  : match
-                ;
+                    ? args[number]
+                    : match;
             });
             return encodeURI(output);
-        };
+        }
     }
-})(_);
+});
