@@ -4,6 +4,7 @@
             jquery: 'libs/js/jquery-1.11.1.min',
             domReady: 'libs/js/domReady',
             underscore: 'libs/js/underscore-min',
+            Q: 'libs/js/q',
             bootstrap: 'libs/js/bootstrap.min',
             angular: 'libs/js/angular',
             'angular-route': 'libs/js/angular-route.min',

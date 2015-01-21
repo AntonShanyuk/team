@@ -14,7 +14,7 @@
             'delete': remove
         }
 
-        return CouchEntityFactory({ db: angularAjax });
+        return CouchEntityFactory({ db: angularAjax, designDoc: 'team' });
 
         function get(url) {
             return $http.get(url, { cache: false }).then(getResponseData);

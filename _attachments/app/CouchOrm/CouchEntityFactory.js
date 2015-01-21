@@ -13,7 +13,7 @@
                 if (id) {
                     return db.get(urlFormat('{0}/{1}', entityConfig.dbUrl, id));
                 } else {
-                    return db.get(encodeURI(entityConfig.url)).then(formatViewRelationsResponse);
+                    return db.get(urlFormat('_view/{0}', entityConfig.type)).then(formatViewRelationsResponse);
                 }
             }
 

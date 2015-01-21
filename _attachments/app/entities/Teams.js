@@ -4,8 +4,7 @@
     angular.module('app').factory('Teams', ['CouchEntity', function (CouchEntity) {
         var entity = {
             type: 'team',
-            props: ['name'],
-            url: '_view/team'
+            props: ['name']
         };
 
         return new CouchEntity(entity);

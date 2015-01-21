@@ -15,7 +15,6 @@
         return new CouchEntity({
             type: 'member',
             props: ['name', 'teams'],
-            url: '_view/member',
             indexes: {
                 byName: function (name) {
                     return stringFormat('_view/memberByName?startkey="{0}"&endkey="{0}\ufff0"', name);
